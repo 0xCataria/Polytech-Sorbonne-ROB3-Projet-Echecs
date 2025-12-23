@@ -1,26 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "Structures.h"
-
-
-Cell** init_plateau_vide(){
-	Cell** plateau = (Cell**) malloc(8*sizeof(Cell*));
-	assert(plateau!=NULL);
-	for(int i = 0; i < 8;i++){
-		plateau[i] = (Cell*) malloc(8*sizeof(Cell));
-		assert(plateau[i]!=NULL);
-	}
-    return(plateau);
-}
-
-void remplissage_plateau(Cell** plateau){
-    init_tour(plateau);
-    init_cavalier(plateau);
-    init_fou(plateau);
-    init_dame(plateau);
-    init_roi(plateau);
-    init_pion(plateau);
-}
 
 void init_tour(Cell** plateau){
     plateau[0][0] -> p=TOUR;
@@ -81,21 +62,42 @@ void init_roi(Cell** plateau){
 }
 
 void init_pion(Cell** plateau){
-    for (int i=0, i<8, i++){
+    for (int i=0; i<8; i++){
         plateau[1][i] -> p=PION;
         plateau[1][i] -> c=NOIR;
     }
-    for (int i=0, i<8, i++){
+    for (int i=0; i<8; i++){
         plateau[6][i] -> p=PION;
         plateau[6][i] -> c=BLANC;
     }
 }
 
-void init_pion(Cell** plateau){
-    for (int i=0, i<8, i++){
-        for (int j=2, j<6, j++){
-            plateau[1][i] -> p=PION;
-            plateau[1][i] -> c=NOIR;
+void init_vide(Cell** plateau){
+    for (int i=2; i<5; i++){
+        for (int j=0; j<8; j++){
+            plateau[i][j] -> p=VIDE;
+            plateau[i][j] -> c=COLORLESS;
         }
     }
+}
+
+Cell** init_plateau_vide(){
+	Cell** plateau = (Cell**) malloc(8*sizeof(Cell*));
+	assert(plateau!=NULL);
+	for(int i = 0; i < 8;i++){
+		plateau[i] = (Cell*) malloc(8*sizeof(Cell));
+		assert(plateau[i]!=NULL);
+	}
+    return(plateau);
+}
+
+void remplissage_plateau(){
+    Cell** plateau = init_plateau_vide();
+    init_tour(plateau);
+    init_cavalier(plateau);
+    init_fou(plateau);
+    init_dame(plateau);
+    init_roi(plateau);
+    init_pion(plateau);
+    init_vide(plateau);
 }

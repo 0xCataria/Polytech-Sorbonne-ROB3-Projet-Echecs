@@ -3,7 +3,7 @@
 
 enum piece
 {
-VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI
+VIDE, PION, TOUR, CAVALIER, FOU, DAME, ROI
 };
 typedef enum piece Piece;
 

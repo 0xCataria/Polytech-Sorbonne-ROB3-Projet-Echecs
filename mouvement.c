@@ -3,6 +3,7 @@
 #include "Structures.h"
 #include "Initialisation.h"
 #include "coup.h"
+#include "convertisseur.h"
 
 int type_mouvement_repete(int x, int y, Couleur c, Cell** plateau, Liste* l){
     if(c == plateau[x][y].c || c != COLORLESS) return 0;
@@ -227,20 +228,4 @@ void mouvement_pion(int coord_X, int coord_Y, Cell** plateau, Liste* l){
         }
     }
 
-}
-
-int main(){
-    printf("coordonnée x : ");
-    int x;
-    scanf("%d",&x);
-    printf("coordonnée y : ");
-    int y;
-    scanf("%d",&y);
-    Cell** plateau = remplissage_plateau();
-    Liste* l = (Liste*) malloc (sizeof(Liste));
-    l->m = NULL;
-    mouvement_cavalier(x,y,plateau,l);
-    afficher_liste(l);
-    liberer_liste_coup(l);
-    return(0);
 }

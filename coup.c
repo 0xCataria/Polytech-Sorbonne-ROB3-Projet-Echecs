@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "Structures.h"
 #include "Initialisation.h"
+#include "convertisseur.h"
 
 //l'idee pour les coups serait d'utilisé les listes chainées
 
@@ -50,7 +51,9 @@ void afficher_liste(Liste *l){
     printf("Liste des coups possibles : \n");
     while( p != NULL)
         {
-            printf("(%d,%d)", p->x, p->y);
+            char nota[3];
+            convertisseur_notation(p, nota);
+            printf("  %s  ", nota);
             p = p->m;
         }
     printf("\n");

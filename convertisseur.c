@@ -1,33 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Structures.h"
-#include "Initialisation.h"
-#include "coup.h"
 
-char* convertisseur_notation(Coup* c){
-    int x = c->x;
-    int y = c->y;
+void convertisseur_notation(Coup* c, char notation[3]){
     char colonne[] = {'a','b','c','d','e','f','g','h'};
 
-    char lettre = colonne[y];
-    char numero = '8' - x;
-    char notation[3] = {lettre, numero, '\0'};
+    char lettre = colonne[c->y];
+    char numero = '8' - (c->x);
 
-    return notation;
+    notation[0] = lettre;
+    notation[1] = numero;
+    notation[2] = '\0';
 }
 
-int convertisseur_coord(char* n[3]){
+void convertisseur_coord(char n[3], int* x, int* y){
     char lettre = n[0];
     char numero = n[1];
     char colonne[] = {'a','b','c','d','e','f','g','h'};
 
-    int x = '8' - numero;
-    int y = 0;
+    *x = '8' - numero;
     for(int i=0; i<8; i++){
         if(colonne[i] == lettre){
-            y = i;
+            *y = i;
         }
     }
-
-    return (x, y);
 }

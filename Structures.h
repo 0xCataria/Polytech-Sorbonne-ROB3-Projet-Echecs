@@ -20,14 +20,22 @@ Couleur c;
 } ;
 typedef struct cell Cell;
 
-struct coup
-{
-int xFrom;
-int yFrom;
-int xTo;
-int yTo;
-} ;
+struct coup{
+    //coordonnée x y du coup possible
+    int x;
+    int y;
+
+    //1 signifie que c'est une prise, 0 un mouvement
+    int prise;
+
+    struct coup *m;
+};
 typedef struct coup Coup;
+
+struct liste{
+    Coup *m;
+};
+typedef struct liste Liste;
 
 struct partie
 {

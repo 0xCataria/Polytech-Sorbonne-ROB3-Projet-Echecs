@@ -4,7 +4,7 @@
 
 Cell** init_plateau_vide();
 
-void remplissage_plateau();
+Cell** remplissage_plateau();
 
 void init_tour(Cell** plateau);
 

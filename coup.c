@@ -17,30 +17,41 @@
 //   mouvement sur une case vide : on place un point vert sur celle ci
 //   prise d'une pièce : on met la case derriere la piece en rouge
 
-struct liste{
-    struct coup *m;
-};
-typedef struct liste Liste;
-
-struct coup{
-    //coordonnée x y du coup possible
-    int x;
-    int y;
-    struct coup *m;
-};
-typedef struct coup Coup;
-
-struct coup* creer(int X, int Y)
-{
+Coup* creer(int coup_X, int coup_Y, int P){
     Coup* new;
     new = (Coup*) malloc (sizeof(Coup));
-    new -> x=X;
-    new -> y=Y;
-    new -> m=NULL;
+    new->x=coup_X;
+    new->y=coup_Y;
+    new->prise=P;
+    new->m=NULL;
     return(new);
 }
 
 void ajout(Coup* c, Liste* l){
-    c -> m= (l -> m);
-    l -> m=c;
+    c->m= (l->m);
+    l->m=c;
+}
+
+void liberer_liste_coup(Liste* l){
+    Coup* ca = l->m;
+    Coup* cb;
+    while( ca != NULL ){
+        cb = ca->m;
+        free(ca);
+        ca = cb;
+    }
+}
+
+//faire les fonctions pour afficher les coups possibles
+//pour cela on pourra faire une copie du plateau et la modifier
+
+void afficher_liste(Liste *l){
+    Coup *p = l->m;
+    printf("Liste des coups possibles : \n");
+    while( p != NULL)
+        {
+            printf("(%d,%d)", p->x, p->y);
+            p = p->m;
+        }
+    printf("\n");
 }

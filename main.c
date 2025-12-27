@@ -8,12 +8,14 @@
 #include "affichage.h"
 
 int main(){
-    int val = 0;
+    //int val = 0;
 
     Cell** plateau = remplissage_plateau();
     Liste* l = (Liste*) malloc (sizeof(Liste));
     l->m = NULL;
+    affichage_plateau(plateau);
 
+    /*
     while(val == 0){
         printf("emplacement de la piece a jouer : ");
         char nota[3];
@@ -42,5 +44,6 @@ int main(){
         plateau[x][y].p = VIDE;
         plateau[x][y].c = COLORLESS;
     }
+        */
     return(0);
 }

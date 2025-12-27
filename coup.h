@@ -10,4 +10,6 @@ void liberer_liste_coup(Liste* l);
 
 void afficher_liste(Liste *l);
 
+void coup_possible(int x, int y, Cell** plateau, Liste* l);
+
 #endif

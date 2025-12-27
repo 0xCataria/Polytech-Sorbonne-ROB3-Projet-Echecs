@@ -73,7 +73,7 @@ void init_pion(Cell** plateau){
 }
 
 void init_vide(Cell** plateau){
-    for (int i=2; i<5; i++){
+    for (int i=2; i<6; i++){
         for (int j=0; j<8; j++){
             plateau[i][j].p=VIDE;
             plateau[i][j].c=COLORLESS;

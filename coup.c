@@ -3,6 +3,7 @@
 #include "Structures.h"
 #include "Initialisation.h"
 #include "convertisseur.h"
+#include "mouvement.h"
 
 //l'idee pour les coups serait d'utilisé les listes chainées
 
@@ -41,6 +42,7 @@ void liberer_liste_coup(Liste* l){
         free(ca);
         ca = cb;
     }
+    l->m = NULL;
 }
 
 //faire les fonctions pour afficher les coups possibles
@@ -57,4 +59,14 @@ void afficher_liste(Liste *l){
             p = p->m;
         }
     printf("\n");
+}
+
+void coup_possible(int x, int y, Cell** plateau, Liste* l){
+    if(plateau[x][y].p == VIDE) printf("Case vide, veuillez réessayer.\n");
+    else if(plateau[x][y].p == PION) mouvement_pion(x,y,plateau,l);
+    else if(plateau[x][y].p == TOUR) mouvement_tour(x,y,plateau,l);
+    else if(plateau[x][y].p == CAVALIER) mouvement_cavalier(x,y,plateau,l);
+    else if(plateau[x][y].p == FOU) mouvement_fou(x,y,plateau,l);
+    else if(plateau[x][y].p == DAME) mouvement_dame(x,y,plateau,l);
+    else if(plateau[x][y].p == ROI) mouvement_roi(x,y,plateau,l);
 }

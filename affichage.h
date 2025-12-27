@@ -3,7 +3,7 @@
 #include "Structures.h"
 #include "Initialisation.h"
 
-char affichage_piece(int x, int y, Cell** plateau);
+const char* affichage_piece(int x, int y, Cell** plateau);
 
 void cases(int x, int y, Cell** plateau, int id);
 

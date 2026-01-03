@@ -34,16 +34,18 @@ void ajout(Coup* c, Liste* l){
     l->m=c;
 }
 
-void liberer_liste_coup(Liste* l){
+void vider_liste(Liste* l){
     Coup* ca = l->m;
     Coup* cb;
-    while( ca != NULL ){
-        cb = ca->m;
+
+    while(ca != NULL){
+        cb = ca->m;     
         free(ca);
         ca = cb;
     }
     l->m = NULL;
 }
+
 
 //faire les fonctions pour afficher les coups possibles
 //pour cela on pourra faire une copie du plateau et la modifier
@@ -60,6 +62,18 @@ void afficher_liste(Liste *l){
         }
     printf("\n");
 }
+
+int coup_dans_liste(Liste* l, int x, int y){
+    Coup* cur = l->m;
+
+    while(cur != NULL){
+        if(cur->x == x && cur->y == y)
+            return 1;
+        cur = cur->m;   
+    }
+    return 0;
+}
+
 
 void coup_possible(int x, int y, Cell** plateau, Liste* l){
     if(plateau[x][y].p == VIDE) printf("Case vide, veuillez réessayer.\n");

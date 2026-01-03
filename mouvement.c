@@ -1,231 +1,90 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "Structures.h"
-#include "Initialisation.h"
+#include "mouvement.h"
 #include "coup.h"
-#include "convertisseur.h"
+
+int coup_invalide(int x, int y){
+    return x < 0 || x > 7 || y < 0 || y > 7;
+}
 
 int type_mouvement_repete(int x, int y, Couleur c, Cell** plateau, Liste* l){
-    if(c == plateau[x][y].c || c != COLORLESS) return 0;
-    else{
-        if(plateau[x][y].p == VIDE){
-            Coup* coup = creer(x,y,0);
-            ajout(coup,l);
-            return(1);
-        }
-        else{
-            Coup* coup = creer(x,y,1);
-            ajout(coup,l);
-            return(0);
-        }
+    if(coup_invalide(x,y)) return 0;
+
+    if(plateau[x][y].c == c)
+        return 0;
+
+    if(plateau[x][y].p == VIDE){
+        ajout(creer(x,y,0), l);
+        return 1;
     }
+
+    ajout(creer(x,y,1), l);
+    return 0;
 }
 
 void type_mouvement_unique(int x, int y, Couleur c, Cell** plateau, Liste* l){
-    if(c != plateau[x][y].c && c != COLORLESS){
-        if(plateau[x][y].p == VIDE){
-            Coup* coup = creer(x,y,0);
-            ajout(coup,l);
-        }
-        else{
-            Coup* coup = creer(x,y,1);
-            ajout(coup,l);
-        }
-    }
+    if(coup_invalide(x,y)) return;
+    if(plateau[x][y].c == c) return;
+
+    ajout(creer(x,y, plateau[x][y].p != VIDE), l);
 }
 
-int coup_invalide(int x, int y){
-    if(x<0 || x>7 || y<0 || y>7) return 1;
-    else return 0;
-}
+/* ===== PIECES ===== */
 
-void mouvement_tour(int coord_X, int coord_Y, Cell** plateau, Liste* l){
-    int x = coord_X;
-    int y = coord_Y;
-    int possible = 1;
-
-    Couleur c = plateau[x][y].c;
-    
-    //Vers le haut
-    while(possible == 1){
-        x-=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-
-    x = coord_X;
-    y = coord_Y;
-    possible = 1;
-
-    //Vers la droite
-    while(possible == 1){
-        y+=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-
-    x = coord_X;
-    y = coord_Y;
-    possible = 1;
-
-    //Vers le bas
-    while(possible == 1){
-        x+=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-
-    x = coord_X;
-    y = coord_Y;
-    possible = 1;
-
-    //Vers la gauche
-    while(possible == 1){
-        y-=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-}
-
-void mouvement_fou(int coord_X, int coord_Y, Cell** plateau, Liste* l){
-    int x = coord_X;
-    int y = coord_Y;
-    int possible = 1;
-
+void mouvement_tour(int x, int y, Cell** plateau, Liste* l){
     Couleur c = plateau[x][y].c;
 
-    //Haut-Droite
-    while(possible == 1){
-        y+=1;
-        x-=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-
-    x = coord_X;
-    y = coord_Y;
-    possible = 1;
-
-    //Bas-Droite
-    while(possible == 1){
-        y+=1;
-        x+=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-
-    x = coord_X;
-    y = coord_Y;
-    possible = 1;
-
-    //Bas-Gauche
-    while(possible == 1){
-        y-=1;
-        x+=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
-
-    x = coord_X;
-    y = coord_Y;
-    possible = 1;
-
-    //Haut-Gauche
-    while(possible == 1){
-        y-=1;
-        x-=1;
-        if(coup_invalide(x,y) == 1) possible = 0;
-        possible = type_mouvement_repete(x,y,c,plateau,l);
-    }
+    for(int i=x-1;i>=0 && type_mouvement_repete(i,y,c,plateau,l);i--);
+    for(int i=x+1;i<8  && type_mouvement_repete(i,y,c,plateau,l);i++);
+    for(int j=y-1;j>=0 && type_mouvement_repete(x,j,c,plateau,l);j--);
+    for(int j=y+1;j<8  && type_mouvement_repete(x,j,c,plateau,l);j++);
 }
 
-void mouvement_dame(int coord_X, int coord_Y, Cell** plateau, Liste* l){
-    mouvement_tour(coord_X,coord_Y,plateau,l);
-    mouvement_fou(coord_X,coord_Y,plateau,l);
-}
-
-void mouvement_roi(int coord_X, int coord_Y, Cell** plateau, Liste* l){
-    int x = coord_X;
-    int y = coord_Y;
+void mouvement_fou(int x, int y, Cell** plateau, Liste* l){
     Couleur c = plateau[x][y].c;
 
-    //8 positions possibles
-    if(coup_invalide(x+1,y) == 0) type_mouvement_unique(x+1,y,c,plateau,l);
-    if(coup_invalide(x-1,y) == 0) type_mouvement_unique(x-1,y,c,plateau,l);
-    if(coup_invalide(x,y+1) == 0) type_mouvement_unique(x,y+1,c,plateau,l);
-    if(coup_invalide(x,y-1) == 0) type_mouvement_unique(x,y-1,c,plateau,l);
-    if(coup_invalide(x+1,y+1) == 0) type_mouvement_unique(x+1,y+1,c,plateau,l);
-    if(coup_invalide(x+1,y-1) == 0) type_mouvement_unique(x+1,y-1,c,plateau,l);
-    if(coup_invalide(x-1,y+1) == 0) type_mouvement_unique(x-1,y+1,c,plateau,l);
-    if(coup_invalide(x-1,y-1) == 0) type_mouvement_unique(x-1,y-1,c,plateau,l);
-
-    //pour le rock verifier si le roi a deja bouger
-    //on pourra utiliser le systeme de sauvegarde des parties
-    //il donne le detail de chauqe mouvement
+    for(int i=1;i<8 && type_mouvement_repete(x-i,y+i,c,plateau,l);i++);
+    for(int i=1;i<8 && type_mouvement_repete(x+i,y+i,c,plateau,l);i++);
+    for(int i=1;i<8 && type_mouvement_repete(x+i,y-i,c,plateau,l);i++);
+    for(int i=1;i<8 && type_mouvement_repete(x-i,y-i,c,plateau,l);i++);
 }
 
-void mouvement_cavalier(int coord_X, int coord_Y, Cell** plateau, Liste* l){
-    int x = coord_X;
-    int y = coord_Y;
+void mouvement_dame(int x, int y, Cell** plateau, Liste* l){
+    mouvement_tour(x,y,plateau,l);
+    mouvement_fou(x,y,plateau,l);
+}
+
+void mouvement_roi(int x, int y, Cell** plateau, Liste* l){
     Couleur c = plateau[x][y].c;
-
-    //8 positions possibles
-    if(coup_invalide(x+2,y+1) == 0) type_mouvement_unique(x+2,y+1,c,plateau,l);
-    if(coup_invalide(x+2,y-1) == 0) type_mouvement_unique(x+2,y-1,c,plateau,l);
-    if(coup_invalide(x-2,y+1) == 0) type_mouvement_unique(x-2,y+1,c,plateau,l);
-    if(coup_invalide(x-2,y-1) == 0) type_mouvement_unique(x-2,y-1,c,plateau,l);
-    if(coup_invalide(x+1,y+2) == 0) type_mouvement_unique(x+1,y+2,c,plateau,l);
-    if(coup_invalide(x+1,y-2) == 0) type_mouvement_unique(x+1,y-2,c,plateau,l);
-    if(coup_invalide(x-1,y+2) == 0) type_mouvement_unique(x-1,y+2,c,plateau,l);
-    if(coup_invalide(x-1,y-2) == 0) type_mouvement_unique(x-1,y-2,c,plateau,l);
+    for(int dx=-1;dx<=1;dx++)
+        for(int dy=-1;dy<=1;dy++)
+            if(dx||dy)
+                type_mouvement_unique(x+dx,y+dy,c,plateau,l);
 }
 
-//Mouvement du pion
-
-void saut_2_cases(int x, int y, Couleur c, Cell** plateau, Liste* l){
-    if(coup_invalide(x,y) == 0 && plateau[x][y].p == VIDE){
-        Coup* coup = creer(x,y,0);
-        ajout(coup,l);
-    }
-}
-
-void prise_pion(int x, int y, Couleur c, Cell** plateau, Liste* l){
-    if(coup_invalide(x,y) == 0 ){
-        if(plateau[x][y].p != VIDE && plateau[x][y].c != c){
-            Coup* coup = creer(x,y,0);
-            ajout(coup,l);
-        }
-    }
-}
-
-void mouvement_pion(int coord_X, int coord_Y, Cell** plateau, Liste* l){
-    int x = coord_X;
-    printf("x=%d\n",x);
-    int y = coord_Y;
-    printf("y=%d\n",y);
+void mouvement_cavalier(int x, int y, Cell** plateau, Liste* l){
     Couleur c = plateau[x][y].c;
-    printf("couleur=%d\n",c);
+    int dx[]={2,2,-2,-2,1,1,-1,-1};
+    int dy[]={1,-1,1,-1,2,-2,2,-2};
 
-    //avancer
-    if(c == BLANC){
-        x-=1;
-        if(coup_invalide(x,y) == 0 && plateau[x][y].p == VIDE){
-            Coup* coup = creer(x,y,0);
-            ajout(coup,l);
-            saut_2_cases(x-1,y,c,plateau,l);
-            prise_pion(x,coord_Y+1,c,plateau,l);
-            prise_pion(x,coord_Y-1,c,plateau,l);
-        }
-    }
-    if(c == NOIR){
-        x+=1;
-        if(coup_invalide(x,y) == 0 && plateau[x][y].p == VIDE){
-            Coup* coup = creer(x,y,0);
-            ajout(coup,l);
-            saut_2_cases(x+1,y,c,plateau,l);
-            prise_pion(x,coord_Y+1,c,plateau,l);
-            prise_pion(x,coord_Y-1,c,plateau,l);
-        }
+    for(int i=0;i<8;i++)
+        type_mouvement_unique(x+dx[i],y+dy[i],c,plateau,l);
+}
+
+void mouvement_pion(int x, int y, Cell** plateau, Liste* l){
+    Couleur c = plateau[x][y].c;
+    int dir = (c == BLANC) ? -1 : 1;
+    int start = (c == BLANC) ? 6 : 1;
+
+    if(!coup_invalide(x+dir,y) && plateau[x+dir][y].p == VIDE){
+        ajout(creer(x+dir,y,0), l);
+
+        if(x == start && plateau[x+2*dir][y].p == VIDE)
+            ajout(creer(x+2*dir,y,0), l);
     }
 
+    for(int d=-1; d<=1; d+=2){
+        if(!coup_invalide(x+dir,y+d)
+        && plateau[x+dir][y+d].p != VIDE
+        && plateau[x+dir][y+d].c != c)
+            ajout(creer(x+dir,y+d,1), l);
+    }
 }
